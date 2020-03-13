@@ -28,7 +28,6 @@ class CouponView @JvmOverloads constructor(
   }
 
   private lateinit var scratchPatternCanvas: Canvas
-
   private var scratchPatternBitmap: Bitmap
   private val scratchPaint: Paint = Paint(Paint.DITHER_FLAG).apply { color = Color.BLUE }
 
@@ -63,6 +62,12 @@ class CouponView @JvmOverloads constructor(
     scratchPatternBitmap = BitmapFactory.decodeResource(resources, R.drawable.scratch_card)
   }
 
+  /*
+  * TODO: Need improvement here:
+  *  When the coupon is clicked, this function will be called multiple times
+  *  during the transition due to which scaling of the bitmap is also repeated.
+  *  The scaling can avoided till the transition is completed.
+  */
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
 
