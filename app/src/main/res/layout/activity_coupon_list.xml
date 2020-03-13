@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context=".ui.couponlist.CouponListActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/tall_toolbar_height">
+
+      <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:id="@+id/collapsingToolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:contentScrim="@color/colorAccent"
+        app:expandedTitleGravity="bottom"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:statusBarScrim="@color/colorAccent"
+        tools:title="Total Rewards">
+
+        <androidx.appcompat.widget.Toolbar
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          app:layout_collapseMode="pin" />
+      </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/couponRecycler"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      app:spanCount="2"
+      tools:listitem="@layout/layout_coupon_item" />
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
