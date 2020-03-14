@@ -3,6 +3,7 @@ package app.nikhil.googlepaycoupons.custom
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
@@ -26,6 +27,10 @@ class CouponView @JvmOverloads constructor(
     private const val TOUCH_TOLERANCE = 4F
   }
 
+  interface CouponScratchListener {
+    fun onCouponScratched()
+  }
+
   private lateinit var scratchPatternCanvas: Canvas
   private lateinit var scratchPatternBitmap: Bitmap
   private val scratchPaint: Paint =
@@ -38,7 +43,11 @@ class CouponView @JvmOverloads constructor(
   private var currentY = 0F
 
   private var shouldInterceptTouchEvents = true
+  private var isRewardShown = false
+  private var isScratched = false
+
   private var clickListener: OnClickListener? = null
+  private var couponScratchListener: CouponScratchListener? = null
 
   init {
     LayoutCouponViewBinding.inflate(LayoutInflater.from(context), this, true)
@@ -69,7 +78,10 @@ class CouponView @JvmOverloads constructor(
 
   override fun dispatchDraw(canvas: Canvas) {
     super.dispatchDraw(canvas)
-    canvas.drawBitmap(scratchPatternBitmap, 0F, 0F, scratchPaint)
+    when {
+      isRewardShown || isScratched -> canvas.drawColor(Color.TRANSPARENT)
+      else -> canvas.drawBitmap(scratchPatternBitmap, 0F, 0F, scratchPaint)
+    }
   }
 
   /*
@@ -131,6 +143,8 @@ class CouponView @JvmOverloads constructor(
   }
 
   private fun touchEnd() {
+    if (!erasePath.isEmpty)
+      couponScratchListener?.onCouponScratched()
     drawErasePath()
   }
 
@@ -146,5 +160,22 @@ class CouponView @JvmOverloads constructor(
     erasePath.moveTo(x, y)
     currentX = x
     currentY = y
+  }
+
+  fun setCouponScratchListener(listener: CouponScratchListener) {
+    this.couponScratchListener = listener
+  }
+
+  fun removeCouponScratchListener() {
+    this.couponScratchListener = null
+  }
+
+  /*
+  * Clear the Scratch Pattern Bitmap
+  */
+  fun showReward() {
+    scratchPatternBitmap.recycle()
+    isRewardShown = true
+    invalidate()
   }
 }
