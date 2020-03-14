@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootCouponResultLayout"
+    android:layout_width="180dp"
+    android:layout_height="180dp"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/tvCouponResultAmount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/sample_reward"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

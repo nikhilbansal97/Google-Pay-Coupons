@@ -1,25 +1,24 @@
 package app.nikhil.googlepaycoupons.custom
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import app.nikhil.googlepaycoupons.R
+import app.nikhil.googlepaycoupons.databinding.LayoutCouponViewBinding
 import kotlin.math.abs
 
 class CouponView @JvmOverloads constructor(
   context: Context,
-  private val attributeSet: AttributeSet? = null,
-  private val defStyleAttr: Int = 0
+  attributeSet: AttributeSet? = null,
+  defStyleAttr: Int = 0
 ) : FrameLayout(context, attributeSet, defStyleAttr) {
 
   companion object {
@@ -28,8 +27,9 @@ class CouponView @JvmOverloads constructor(
   }
 
   private lateinit var scratchPatternCanvas: Canvas
-  private var scratchPatternBitmap: Bitmap
-  private val scratchPaint: Paint = Paint(Paint.DITHER_FLAG).apply { color = Color.BLUE }
+  private lateinit var scratchPatternBitmap: Bitmap
+  private val scratchPaint: Paint =
+    Paint(Paint.DITHER_FLAG).apply { color = resources.getColor(R.color.colorAccent) }
 
   private val erasePath: Path = Path()
   private val erasePaint: Paint = Paint()
@@ -41,14 +41,9 @@ class CouponView @JvmOverloads constructor(
   private var clickListener: OnClickListener? = null
 
   init {
-    val typedArray: TypedArray =
-      context.obtainStyledAttributes(attributeSet, R.styleable.CouponView, defStyleAttr, 0)
-    typedArray.getDrawable(R.styleable.CouponView_hiddenImage)
-    typedArray.recycle()
-
+    LayoutCouponViewBinding.inflate(LayoutInflater.from(context), this, true)
     // Initialize the erase paint
     erasePaint.apply {
-      color = Color.RED
       isAntiAlias = true
       isDither = true
       style = Paint.Style.STROKE
@@ -57,24 +52,19 @@ class CouponView @JvmOverloads constructor(
       xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
       strokeWidth = 6 * STROKE_WIDTH
     }
-
-    // Initialize the scratch pattern Bitmap
-    scratchPatternBitmap = BitmapFactory.decodeResource(resources, R.drawable.scratch_card)
   }
 
-  /*
-  * TODO: Need improvement here:
-  *  When the coupon is clicked, this function will be called multiple times
-  *  during the transition due to which scaling of the bitmap is also repeated.
-  *  The scaling can avoided till the transition is completed.
-  */
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
     super.onSizeChanged(w, h, oldw, oldh)
 
-    // Scale down the bitmap to the dimensions of the view.
-    scratchPatternBitmap = Bitmap.createScaledBitmap(scratchPatternBitmap, width, height, false)
+    if (::scratchPatternBitmap.isInitialized) {
+      scratchPatternBitmap.recycle()
+    }
+
+    scratchPatternBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
     // Create a Canvas object backed by the scratch pattern bitmap.
     scratchPatternCanvas = Canvas(scratchPatternBitmap)
+    scratchPatternCanvas.drawRect(0F, 0F, w.toFloat(), h.toFloat(), scratchPaint)
   }
 
   override fun dispatchDraw(canvas: Canvas) {
